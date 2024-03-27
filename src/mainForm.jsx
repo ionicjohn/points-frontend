@@ -4,6 +4,8 @@ import api from "./api";
 
 const TreeView = ({ data, company }) => {
   const [companyPersistence, setCompanyPersistence] = useState({});
+  const [cacheCleared, setCacheCleared] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   let stateCount = 0;
   const useStatePersistent = (defaultVal) => {
@@ -158,6 +160,28 @@ const TreeView = ({ data, company }) => {
     })()
   }
 
+  const clearCache = async () => {
+    setShowConfirmation(true);
+  };
+
+  const confirmClearCache = async (confirmed) => {
+    setShowConfirmation(false);
+    if (confirmed) {
+      try {
+        await api.clearCache();
+        setCacheCleared(true);
+      } catch (error) {
+        console.error('Error clearing cache:', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (cacheCleared) {
+      window.location.reload();
+    }
+  }, [cacheCleared]);
+
   return (
     <div>
       <div className='button-container'>
@@ -165,7 +189,16 @@ const TreeView = ({ data, company }) => {
         <button onClick={handleUnselectAll} className='select-all'>Odznacz wszystkie</button>
       </div>
       <ul>{renderTree(data)}</ul>
-      <button onClick={handleSubmit}>Policz punkty</button><br></br>
+      <button onClick={handleSubmit}>Policz punkty</button>
+      <button style={{ color: 'red', fontWeight: 'bold' }} onClick={clearCache}>Wyczyść pamięć podręczną</button>
+      {showConfirmation && (
+        <div className="confirmation-dialog">
+          <p>Czy na pewno chcesz wyczyścić pamięć podręczną?</p>
+          <button onClick={() => confirmClearCache(true)}>Tak</button>
+          <button onClick={() => confirmClearCache(false)}>Nie</button>
+        </div>
+      )}
+      <br />
     </div>
   );
 };

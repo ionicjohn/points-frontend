@@ -19,17 +19,18 @@ interface GenerateStatusResponse {
     already_generated?: boolean;
     not_running?: boolean;
     elapsed?: number;
+    error?: string;
 }
 
 class PointGenerationAPI {
   private http: AxiosInstance;
 
   constructor(baseURL: string) {
-    this.http = axios.create({
-      baseURL,
-    });
+    this.http = axios.create({ baseURL });
   }
 
+
+  
   async getCached(): Promise<AxiosResponse<CachedResponse>> {
     return this.http.get('/api/cached');
   }
@@ -44,6 +45,11 @@ class PointGenerationAPI {
 
   async getGenerateStatus(): Promise<AxiosResponse<GenerateStatusResponse>> {
     return this.http.get('/api/generate/status');
+  }
+
+
+  async clearCache(): Promise<AxiosResponse> {
+    return this.http.delete('/api/clearCache');
   }
 }
 
