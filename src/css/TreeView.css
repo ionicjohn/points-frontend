@@ -1,0 +1,75 @@
+/* General Styles */
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  margin-left: 20px;
+}
+
+/* Tree Structure */
+.tree-container {
+  display: block;
+}
+
+.tree-node {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.tree-node__content {
+  display: flex;
+  align-items: center;
+}
+
+.tree-node__toggle {
+  cursor: pointer;
+  margin-right: 5px;
+  transition: transform 0.3s ease;
+}
+
+.tree-node__toggle:before {
+  content: "+";
+  font-weight: bold;
+}
+
+.tree-node__toggle--expanded:before {
+  content: "-";
+  transform: rotate(90deg);
+}
+
+.tree-node__toggle--leaf:before {
+  content: "\25CF"; /* Dot character */
+  color: transparent;
+}
+
+.tree-node__checkbox {
+  margin-right: 5px;
+}
+
+/* Optional Styles */
+.tree-node__label {
+  cursor: pointer;
+}
+
+.tree-node__label:hover {
+  text-decoration: underline;
+}
+
+/* Animation */
+.tree-node__children {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.tree-node__children--expanded {
+  max-height: 100%; /* Adjust this value as needed */
+}
+
+button {
+  margin: 5px;
+}
