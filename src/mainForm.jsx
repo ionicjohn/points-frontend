@@ -155,9 +155,13 @@ const TreeView = ({ data, company }) => {
 
   function handleSubmit() {
     (async () => {
-      const { tree } = (await api.countPoints(checkedNodes, company)).data;
-      setTree(tree)
-    })()
+      try {
+        const { tree } = await api.countPoints(checkedNodes, company);
+        setTree(tree);
+      } catch (error) {
+        console.error('Error counting points:', error);
+      }
+    })();
   }
 
   const clearCache = async () => {
@@ -173,34 +177,37 @@ const TreeView = ({ data, company }) => {
       } catch (error) {
         console.error('Error clearing cache:', error);
       }
-    }
-  };
-
-  useEffect(() => {
-    if (cacheCleared) {
-      window.location.reload();
-    }
-  }, [cacheCleared]);
-
-  return (
-    <div>
-      <div className='button-container'>
-        <button onClick={handleSelectAll} className='select-all'>Zaznacz wszystkie</button>
-        <button onClick={handleUnselectAll} className='select-all'>Odznacz wszystkie</button>
-      </div>
-      <ul>{renderTree(data)}</ul>
-      <button onClick={handleSubmit}>Policz punkty</button>
-      <button style={{ color: 'red', fontWeight: 'bold' }} onClick={clearCache}>Wyczyść pamięć podręczną</button>
-      {showConfirmation && (
-        <div className="confirmation-dialog">
-          <p>Czy na pewno chcesz wyczyścić pamięć podręczną?</p>
-          <button onClick={() => confirmClearCache(true)}>Tak</button>
-          <button onClick={() => confirmClearCache(false)}>Nie</button>
+    };
+  }
+  
+    useEffect(() => {
+      if (cacheCleared) {
+        window.location.reload();
+      }
+    }, [cacheCleared]);
+  
+    return (
+      <div>
+        <div className='button-container'>
+          <button onClick={handleSelectAll} className='select-all'>Zaznacz wszystkie</button>
+          <button onClick={handleUnselectAll} className='select-all'>Odznacz wszystkie</button>
         </div>
-      )}
-      <br />
-    </div>
-  );
-};
-
-export default TreeView;
+        <ul>{renderTree(data)}</ul>
+        <button onClick={handleSubmit}>Policz punkty</button>
+        <button style={{ color: 'red', fontWeight: 'bold' }} onClick={clearCache}>Wyczyść pamięć podręczną</button>
+        {showConfirmation && (
+          <div className="modal-backdrop">
+            <div className="modal-content">
+              <p>Czy na pewno chcesz wyczyścić pamięć podręczną?</p>
+              <button onClick={() => confirmClearCache(true)} className='yes-button-confirmation'>Tak</button>
+              <button onClick={() => confirmClearCache(false)} className='no-button-confirmation'>Nie</button>
+            </div>
+          </div>
+        )}
+        <br />
+      </div>
+    );
+  };
+  
+  export default TreeView;
+  
